@@ -4,7 +4,7 @@ const crypto = require("crypto")
 var CryptoJS = require("crypto-js");
 
 var cipher=""
-function algo(rand,lo,up)
+function algo(rand,lo,up,text)
 {
     if(rand==1)
     {
@@ -57,7 +57,7 @@ router.get('/encrypt',async(req,res)=>{
             up=length;
         }
         prev=up;
-        algo(rand,lo,up);
+        algo(rand,lo,up,text);
     }
 
     res.status(200).json({data:cipher});
