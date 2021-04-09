@@ -67,32 +67,38 @@ router.post('/user/login',async(req,res)=>{
 })
 
 router.post('/send/mail',async(req,res)=>{
-    var email=req.query.email
-    var user=User.findOne({email:req.query.email});
-    if(!user)
-        {
-            res.status(404).json()
-        }
-    var otp=otpGenerator.generate(6, { specialChars: false });
-    user.otp=otp
-    await user.save();
-    const emailData = {
-        from: process.env.EMAIL_FROM,
-        to: email,
-        subject: `Confirm Your Identity`,
-        html: `
-        <p>We detected an usual login to your system from an unknown source. Last login attempt was made
-        at ${user.lastLogin} from ${user.location}. IP detected was ${user.ip}.
-        <p>The attempt was blocked by us, to continue please use the following OTP to confirm your identity :</p>
-        <h3><b>${otp}</h3>  
-    `
-    };
+    try
+    {
+        var email=req.query.email
+        var user=User.findOne({email:req.query.email});
+        if(!user)
+            {
+                res.status(404).json()
+            }
+        var otp=otpGenerator.generate(6, { specialChars: false });
+        user.otp=otp
+        await user.save();
+        const emailData = {
+            from: process.env.EMAIL_FROM,
+            to: email,
+            subject: `Confirm Your Identity`,
+            html: `
+            <p>We detected an usual login to your system from an unknown source. Last login attempt was made
+            at ${user.lastLogin} from ${user.location}. IP detected was ${user.ip}.
+            <p>The attempt was blocked by us, to continue please use the following OTP to confirm your identity :</p>
+            <h3><b>${otp}</h3>  
+        `
+        };
 
-    sgMail.send(emailData).then(sent => {
-        return res.json({
-            message: `OTP has been sent to ${email}.`
+        sgMail.send(emailData).then(sent => {
+            return res.json({
+                message: `OTP has been sent to ${email}.`
+            });
         });
-    });
+    }
+    catch{
+        res.status(400).json({error:"Invalid email"})
+    }
 })
 
 router.get('/verify/otp',async(req,res)=>{
