@@ -13,11 +13,13 @@ mongoose.connect(process.env.db, {
 })
 
 var cipherRoutes=require('./routes/cipher')
+var userRoutes=require('./routes/auth')
 
 app.use(bodyParser.json())
 app.use(cors())
 
 app.use('/api',cipherRoutes)
+app.use('/api',userRoutes)
 
 app.listen(port,()=>{
     console.log('Server started')
