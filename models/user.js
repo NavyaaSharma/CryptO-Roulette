@@ -44,7 +44,8 @@ var userSchema=new mongoose.Schema({
     },
     otp:
     {
-        type:String
+        type:String,
+        default:""
     }
 })
 
