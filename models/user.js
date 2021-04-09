@@ -41,6 +41,10 @@ var userSchema=new mongoose.Schema({
     {
         type:String,
         default:"tera baap"
+    },
+    otp:
+    {
+        type:String
     }
 })
 
