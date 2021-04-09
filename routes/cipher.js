@@ -38,7 +38,7 @@ function algo(rand,lo,up,text)
 
 router.get('/encrypt',async(req,res)=>{
 
-    var text=req.body.text;
+    var text=req.query.text;
     var length=text.length;
     var range=Math.floor(length/4);
     var prev=0;
@@ -64,7 +64,7 @@ router.get('/encrypt',async(req,res)=>{
 })
 
 router.get('/decrypt',async(req,res)=>{
-    var str = req.body.text;
+    var str = req.query.text;
     var prev=0;
     var ansText=""
     for(var i=0; i<str.length;i++) {

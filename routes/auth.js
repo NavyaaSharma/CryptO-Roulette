@@ -63,4 +63,25 @@ router.post('/user/login',async(req,res)=>{
     }
 })
 
+// router.post('/verify/login',async(req,res)=>{
+//     const emailData = {
+//         from: process.env.EMAIL_FROM,
+//         to: email,
+//         subject: `Confirm Your Identity`,
+//         html: `
+//         <p>Please use the following OTP to confirm your identity:</p>
+//         <p>${process.env.CLIENT_URL}/auth/account/activate/${token}</p>
+//         <hr />
+//         <p>This email may contain sensetive information</p>
+//         <p>https://seoblog.com</p>
+//     `
+//     };
+
+//     sgMail.send(emailData).then(sent => {
+//         return res.json({
+//             message: `Email has been sent to ${email}. Follow the instructions to activate your account.`
+//         });
+//     });
+// })
+
 module.exports=router;
