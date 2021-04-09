@@ -3,7 +3,7 @@ var router=express.Router();
 const crypto = require("crypto")
 var CryptoJS = require("crypto-js");
 
-var cipher="";
+var cipher=""
 function algo(rand,lo,up)
 {
     if(rand==1)
@@ -37,6 +37,7 @@ function algo(rand,lo,up)
 }
 
 router.get('/encrypt',async(req,res)=>{
+
     var text=req.body.text;
     var length=text.length;
     var range=Math.floor(length/4);
