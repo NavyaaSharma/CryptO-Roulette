@@ -70,6 +70,7 @@ router.post('/send/mail',async(req,res)=>{
     try
     {
         var email=req.query.email
+        console.log(email)
         var user=User.findOne({email:req.query.email});
         if(!user)
             {
