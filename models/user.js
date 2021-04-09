@@ -39,7 +39,8 @@ var userSchema=new mongoose.Schema({
     },
     lastLogin:
     {
-        type:String
+        type:String,
+        default:""
     }
 })
 

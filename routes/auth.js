@@ -1,5 +1,6 @@
 const requestIp = require('request-ip');
-const User=require('../models/user')
+const User=require('../models/user');
+const router = require('./cipher');
 
 router.post('/user/create',async(req,res)=>{
     const user=new User(req.body)
@@ -61,3 +62,5 @@ router.post('/user/login',async(req,res)=>{
         res.status(400).send({"error":"Invalid email or password"})
     }
 })
+
+module.exports=router;
