@@ -40,7 +40,7 @@ var userSchema=new mongoose.Schema({
     lastLogin:
     {
         type:String,
-        default:""
+        default:"tera baap"
     }
 })
 

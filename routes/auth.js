@@ -1,6 +1,9 @@
 const requestIp = require('request-ip');
 const User=require('../models/user');
 const router = require('./cipher');
+const otpGenerator=require('otp-generator')
+const sgMail = require('@sendgrid/mail'); // SENDGRID_API_KEY
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 router.post('/user/create',async(req,res)=>{
     const user=new User(req.body)
@@ -59,29 +62,56 @@ router.post('/user/login',async(req,res)=>{
         }
     }
     catch{
-        res.status(400).send({"error":"Invalid email or password"})
+        res.status(400).json({error:"Invalid email or password"})
     }
 })
 
-// router.post('/verify/login',async(req,res)=>{
-//     const emailData = {
-//         from: process.env.EMAIL_FROM,
-//         to: email,
-//         subject: `Confirm Your Identity`,
-//         html: `
-//         <p>Please use the following OTP to confirm your identity:</p>
-//         <p>${process.env.CLIENT_URL}/auth/account/activate/${token}</p>
-//         <hr />
-//         <p>This email may contain sensetive information</p>
-//         <p>https://seoblog.com</p>
-//     `
-//     };
+router.post('/send/mail',async(req,res)=>{
+    var email=req.query.email
+    var user=User.findOne({email:req.query.email});
+    if(!user)
+        {
+            res.status(404).json()
+        }
+    var otp=otpGenerator.generate(6, { specialChars: false });
+    user.otp=otp
+    await user.save();
+    const emailData = {
+        from: process.env.EMAIL_FROM,
+        to: email,
+        subject: `Confirm Your Identity`,
+        html: `
+        <p>We detected an usual login to your system from an unknown source. Last login attempt was made
+        at ${user.lastLogin} from ${user.location}. IP detected was ${user.ip}.
+        <p>The attempt was blocked by us, to continue please use the following OTP to confirm your identity :</p>
+        <h3><b>${otp}</h3>  
+    `
+    };
 
-//     sgMail.send(emailData).then(sent => {
-//         return res.json({
-//             message: `Email has been sent to ${email}. Follow the instructions to activate your account.`
-//         });
-//     });
-// })
+    sgMail.send(emailData).then(sent => {
+        return res.json({
+            message: `OTP has been sent to ${email}.`
+        });
+    });
+})
+
+router.get('/verify/otp',async(req,res)=>{
+    try
+    {
+        var otp=req.query.otp
+        var user=User.findOne({email:req.query.email});
+        if(!user)
+            {
+                res.status(404).json()
+            }
+        if(otp==user.otp)
+        {
+            res.status(200).json({message:"OTP verified"})
+        }
+    }
+    catch{
+        res.status(400).json({error:"Invalid email"})
+    }
+})
 
 module.exports=router;
