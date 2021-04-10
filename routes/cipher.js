@@ -36,7 +36,7 @@ function algo(rand,lo,up,text)
     }
 }
 
-router.get('/encrypt',async(req,res)=>{
+router.get('/encrypt',async(req,response)=>{
 
     var text=req.query.text;
     var length=text.length;
@@ -87,7 +87,7 @@ router.get('/encrypt',async(req,res)=>{
         }
     }
 
-    res.status(200).json({data:cipher});
+    response.status(200).json({data:cipher});
 })
 
 router.get('/decrypt',async(req,res)=>{
