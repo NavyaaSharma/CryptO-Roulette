@@ -27,11 +27,7 @@ var userSchema=new mongoose.Schema({
     {
         type:String
     },
-    ip:
-    {
-        type:String,
-        default:""
-    },
+    ip:[],
     location:
     {
         type:String,

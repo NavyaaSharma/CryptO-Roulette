@@ -5,6 +5,10 @@ const otpGenerator=require('otp-generator')
 const sgMail = require('@sendgrid/mail'); // SENDGRID_API_KEY
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
+Date.prototype.getCurrentTime = function(){
+    return ((this.getHours() < 10)?"0":"") + ((this.getHours()>12)?(this.getHours()-12):this.getHours()) +":"+ ((this.getMinutes() < 10)?"0":"") + this.getMinutes() +":"+ ((this.getSeconds() < 10)?"0":"") + this.getSeconds() + ((this.getHours()>12)?(' PM'):' AM');
+    };
+
 router.post('/user/create',async(req,res)=>{
     var obj={
         name:req.query.name,
@@ -33,30 +37,32 @@ router.post('/user/login',async(req,res)=>{
         else
         {
             const clientIp = requestIp.getClientIp(req); 
-            if(user.ip=="")
+            if(user.id.length==0)
             {
                 
-                user.ip=clientIp;
-                var currentdate = new Date(); 
-                var datetime =  currentdate.getDate() + "/"
-                                + (currentdate.getMonth()+1)  + "/" 
-                                + currentdate.getFullYear() + " @ "
-                                + currentdate.getHours() + ":"
-                                + currentdate.getMinutes() + ":" 
-                                + currentdate.getSeconds();
+                user.ip.push(clientIp);
+                 var today = new Date(); //date object
+                    var current_date = today.getDate();
+                    var current_month = today.getMonth()+1; //Month starts from 0
+                    var current_year = today.getFullYear();
+                    var current_time = today.getCurrentTime();
+                    var datetime=current_date+"/"+current_month+"/"+current_year+' '+current_time;
                 user.lastLogin=datetime
                 await user.save()
                 res.status(200).json({token,user})
             }
-            else if(user.ip==clientIp)
+            var userIp=user.ip.find(function(element){
+                return element==clientIp
+            })
+            
+            if(userIp!=undefined)
             {
-                var currentdate = new Date(); 
-                var datetime =  currentdate.getDate() + "/"
-                                + (currentdate.getMonth()+1)  + "/" 
-                                + currentdate.getFullYear() + " @ "
-                                + currentdate.getHours() + ":"
-                                + currentdate.getMinutes() + ":" 
-                                + currentdate.getSeconds();
+                var today = new Date(); //date object
+                    var current_date = today.getDate();
+                    var current_month = today.getMonth()+1; //Month starts from 0
+                    var current_year = today.getFullYear();
+                    var current_time = today.getCurrentTime();
+                    var datetime=current_date+"/"+current_month+"/"+current_year+' '+current_time;
                 user.lastLogin=datetime
                 await user.save()
                 res.status(200).json({token,user})
@@ -109,11 +115,12 @@ router.post('/send/mail',async(req,res)=>{
         res.status(400).json({error:"Invalid email"})
     }
 })
-
-router.get('/verify/otp',async(req,res)=>{
+router.get('/verify/mail',async(req,res)=>{
     try
     {
         var otp=req.query.otp
+        console.log(otp)
+        console.log(req.query.email)
         var user=User.findOne({email:req.query.email});
         if(!user)
             {
@@ -121,6 +128,9 @@ router.get('/verify/otp',async(req,res)=>{
             }
         if(otp==user.otp)
         {
+            const clientIp = requestIp.getClientIp(req); 
+            user.ip.push(clientIp)
+            await user.save()
             res.status(200).json({message:"OTP verified"})
         }
     }
