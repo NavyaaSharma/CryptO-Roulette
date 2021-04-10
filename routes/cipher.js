@@ -58,13 +58,13 @@ router.get('/encrypt',async(req,response)=>{
 })
 
 router.get('/decrypt',async(req,res)=>{
-    var str = req.query.text;
+    var cipher = req.query.text;
     var prev=0;
     var ansText=""
-    for(var i=0; i<str.length;i++) {
-        if (str[i] === "@")
+    for(var i=0; i<cipher.length;i++) {
+        if (cipher[i] === "@")
         {
-            if(str[i+1]=='1')
+            if(cipher[i+1]=='1')
             {
                 var msg=cipher.substring(prev,i);
                 // console.log(msg)
@@ -75,7 +75,7 @@ router.get('/decrypt',async(req,res)=>{
                 // console.log(prev,i);
                 prev=i+2;
             }
-            else if(str[i+1]=='2')
+            else if(cipher[i+1]=='2')
             {
                 var msg=cipher.substring(prev,i);
                 // console.log(msg)
@@ -86,7 +86,7 @@ router.get('/decrypt',async(req,res)=>{
                 // console.log(prev,i);
                 prev=i+2;
             }
-            else if(str[i+1]=='3')
+            else if(cipher[i+1]=='3')
             {
                 var msg=cipher.substring(prev,i);
                 // console.log(msg)
@@ -97,7 +97,7 @@ router.get('/decrypt',async(req,res)=>{
                 // console.log(prev,i);
                 prev=i+2;
             }
-            if(str[i+1]=='4')
+            if(cipher[i+1]=='4')
             {
                 var msg=cipher.substring(prev,i);
                 // console.log(msg)
