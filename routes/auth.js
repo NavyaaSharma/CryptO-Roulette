@@ -44,7 +44,7 @@ router.post('/user/login',async(req,res)=>{
                 var today = new Date(); // Sun Dec 22 2019 13:18:01 GMT+0530 (India Standard Time)
                 var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
                 var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-                var datetime = date + 'at' + time;
+                var datetime = date + ' at ' + time;
                 user.lastLogin=datetime
                 await user.save()
                 res.status(200).json({token,user})
@@ -58,7 +58,7 @@ router.post('/user/login',async(req,res)=>{
                 var today = new Date(); // Sun Dec 22 2019 13:18:01 GMT+0530 (India Standard Time)
                 var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
                 var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-                var datetime = date + 'at' + time;
+                var datetime = date + ' at ' + time;
                 user.lastLogin=datetime
                 await user.save()
                 res.status(200).json({token,user})
