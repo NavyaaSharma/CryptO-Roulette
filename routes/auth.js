@@ -37,16 +37,14 @@ router.post('/user/login',async(req,res)=>{
         else
         {
             const clientIp = requestIp.getClientIp(req); 
-            if(user.id.length==0)
+            if(user.ip.length==0)
             {
                 
                 user.ip.push(clientIp);
-                 var today = new Date(); //date object
-                    var current_date = today.getDate();
-                    var current_month = today.getMonth()+1; //Month starts from 0
-                    var current_year = today.getFullYear();
-                    var current_time = today.getCurrentTime();
-                    var datetime=current_date+"/"+current_month+"/"+current_year+' '+current_time;
+                var today = new Date(); // Sun Dec 22 2019 13:18:01 GMT+0530 (India Standard Time)
+                var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+                var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+                var datetime = date + 'at' + time;
                 user.lastLogin=datetime
                 await user.save()
                 res.status(200).json({token,user})
@@ -54,15 +52,13 @@ router.post('/user/login',async(req,res)=>{
             var userIp=user.ip.find(function(element){
                 return element==clientIp
             })
-            
+            console.log(clientIp)
             if(userIp!=undefined)
             {
-                var today = new Date(); //date object
-                    var current_date = today.getDate();
-                    var current_month = today.getMonth()+1; //Month starts from 0
-                    var current_year = today.getFullYear();
-                    var current_time = today.getCurrentTime();
-                    var datetime=current_date+"/"+current_month+"/"+current_year+' '+current_time;
+                var today = new Date(); // Sun Dec 22 2019 13:18:01 GMT+0530 (India Standard Time)
+                var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+                var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+                var datetime = date + 'at' + time;
                 user.lastLogin=datetime
                 await user.save()
                 res.status(200).json({token,user})
@@ -115,27 +111,33 @@ router.post('/send/mail',async(req,res)=>{
         res.status(400).json({error:"Invalid email"})
     }
 })
-router.get('/verify/mail',async(req,res)=>{
+router.get('/verify',async(req,res)=>{
     try
     {
         var otp=req.query.otp
         console.log(otp)
         console.log(req.query.email)
-        var user=User.findOne({email:req.query.email});
+        var user=await User.findOne({email:req.query.email});
         if(!user)
             {
                 res.status(404).json()
             }
+        console.log(user)
         if(otp==user.otp)
         {
             const clientIp = requestIp.getClientIp(req); 
             user.ip.push(clientIp)
+            console.log('fg')
             await user.save()
             res.status(200).json({message:"OTP verified"})
         }
+        else
+        {
+            res.status(401).json({message:"Wrong OTP"})
+        }
     }
-    catch{
-        res.status(400).json({error:"Invalid email"})
+    catch(e){
+        res.status(400).json({e})
     }
 })
 
