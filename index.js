@@ -6,7 +6,7 @@ var app=express()
 var port=process.env.PORT || 8000
 
 var mongoose = require('mongoose')
-mongoose.connect(process.env.db, {
+mongoose.connect('mongodb+srv://cryptoroulette:hack@cluster0.qiapg.mongodb.net/crypto?retryWrites=true&w=majority', {
     useCreateIndex:true,
     useNewUrlParser: true,
     useUnifiedTopology:true

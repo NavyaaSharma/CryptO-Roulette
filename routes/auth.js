@@ -6,19 +6,25 @@ const sgMail = require('@sendgrid/mail'); // SENDGRID_API_KEY
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 router.post('/user/create',async(req,res)=>{
-    const user=new User(req.body)
+    var obj={
+        name:req.query.name,
+        email:req.query.email,
+        password:req.query.password
+    }
+    console.log(obj)
+    const user=new User(obj)
     try{
         await user.save()
         res.status(201).json({data:user})
     }
-    catch{
-        res.status(400).json()
+    catch(e){
+        res.status(400).json(e)
     }
 })
 
 router.post('/user/login',async(req,res)=>{
     try{
-        const user=await User.findByCredentials(req.body.email,req.body.password)
+        const user=await User.findByCredentials(req.query.email,req.query.password)
         const token=await user.generateToken()
         if(!user)
         {
@@ -92,6 +98,8 @@ router.post('/send/mail',async(req,res)=>{
         };
 
         sgMail.send(emailData).then(sent => {
+            console.log(emailData)
+            console.log(sent)
             return res.json({
                 message: `OTP has been sent to ${email}.`
             });
