@@ -15,13 +15,13 @@ router.get('/encrypt',async(req,response)=>{
         var rand=Math.floor(Math.random()*4)+1;
         var lo=prev;
         var up;
-        if(lo+range<length)
+        if(i==3)
         {
-            up=lo+range;
+            up=length;
         }
         else
         {
-            up=length;
+            up=lo+range;
         }
         prev=up;
         if(rand==1)
